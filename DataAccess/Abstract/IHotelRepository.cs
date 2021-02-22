@@ -11,6 +11,6 @@ namespace DataAccess.Abstract
         Hotel GetHotelById(int id);
         Hotel CreateHotel(Hotel hotel);
         Hotel UpdateHotel(Hotel hotel);
-        void Delete(int id)
+        void Delete(int id);
     }
 }
