@@ -2,6 +2,7 @@
 using Entities;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace DataAccess.Concrete
@@ -10,27 +11,48 @@ namespace DataAccess.Concrete
     {
         public Hotel CreateHotel(Hotel hotel)
         {
-            throw new NotImplementedException();
-        }
+            using (var hotelDbContext = new HotelDbContext())
+            {
+                hotelDbContext.Hotels.Add(hotel);
+                hotelDbContext.SaveChanges();
+                return hotel;
+            }
+        } 
 
         public void Delete(int id)
         {
-            throw new NotImplementedException();
+            using (var hotelDbContext = new HotelDbContext())
+            {
+                var deletehotel = GetHotelById(id);
+                hotelDbContext.Hotels.Remove(deletehotel);
+                hotelDbContext.SaveChanges();
+         
+            }
         }
 
         public List<Hotel> GetAllHotels()
         {
-            throw new NotImplementedException();
+            using (var hotelDbContext=new HotelDbContext())
+            {
+                return hotelDbContext.Hotels.ToList();
+            }
         }
 
         public Hotel GetHotelById(int id)
         {
-            throw new NotImplementedException();
+            using (var hotelDbContext = new HotelDbContext())
+            {
+                return hotelDbContext.Hotels.Find(id);
+            }
         }
 
         public Hotel UpdateHotel(Hotel hotel)
         {
-            throw new NotImplementedException();
+            using (var hotelDbContext = new HotelDbContext())
+            {
+                hotelDbContext.Hotels.Update(hotel);
+                return hotel;
+            }
         }
     }
 }
