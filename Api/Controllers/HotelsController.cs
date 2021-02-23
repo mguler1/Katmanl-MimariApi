@@ -20,29 +20,51 @@ namespace Api.Controllers
             _hotelService = new HotelManager();
         }
         [HttpGet]
-        public List<Hotel>Get()
+        public IActionResult Get()
         {
-            return _hotelService.GetAllHotels();
+            var hotels= _hotelService.GetAllHotels();
+            return Ok(hotels);//200 döndür body kısmına Hoteli ekle
         }
+            
         [HttpGet("{id}")]
-        public Hotel  Get(int id)
+        public IActionResult  Get(int id)
         {
-            return _hotelService.GetHotelById(id);
+            var hotel= _hotelService.GetHotelById(id);
+            if (hotel!=null)
+            {
+                return Ok(hotel);
+            }
+            return NotFound(); //404
         }
         [HttpPost]
-        public Hotel Post([FromBody] Hotel hotel)
+        public IActionResult Post([FromBody] Hotel hotel)
         {
-            return _hotelService.CreateHotel(hotel);
+            if (ModelState.IsValid)//validasyon kontrolü
+            {
+                var createHotel= _hotelService.CreateHotel(hotel);
+                return CreatedAtAction("Get", new { id = createHotel.Id }, createHotel);
+            }
+            return BadRequest(ModelState);
         }
         [HttpPut]
-        public Hotel Put([FromBody] Hotel hotel)
+        public IActionResult Put([FromBody] Hotel hotel)
         {
-            return _hotelService.UpdateHotel(hotel);
+            if (_hotelService.GetHotelById(hotel.Id)!=null)
+            {
+                return Ok(_hotelService.UpdateHotel(hotel));
+            }
+            return NotFound();
         }
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        public IActionResult Delete(int id)
         {
-            _hotelService.Delete(id);
+            if (_hotelService.GetHotelById(id) != null)
+            {
+                _hotelService.Delete(id);
+                return Ok();
+            }
+            return NotFound();
+          
         }
     }
 }
